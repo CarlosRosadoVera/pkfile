@@ -56,11 +56,11 @@ class SaveFile {
 
     get daycare () {
         const inUse = this.array[0x2CF4] != 0x0;
+        const nickname = inUse ? this.getDelimitedString(0x2CF5) : null;
+        const otName = inUse ? this.getDelimitedString(0x2D00) : null;
         return {
             inUse: inUse,
-            name: inUse ? this.getDelimitedString(0x2CF5) : null,
-            otName: inUse ? this.getDelimitedString(0x2D00) : null,
-            pkmn: null
+            pkmn: inUse ? new Pkmn(this, 0x2D0B, 0, false, otName, nickname, -1) : null
             //0x2D0B, pkmn box data format
         };
     }
