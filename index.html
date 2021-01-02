@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PK-EDIT</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style>
+        .clickable {
+            cursor: pointer;
+        }
+        .size40 {
+            max-height: 44rem;
+            overflow: scroll;
+        }
+        .size30 {
+            max-height: 32rem;
+            overflow: scroll;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="file-field input-field row">
+            <div class="btn">
+                <span>File</span>
+                <input type="file" id="inputFile" >
+            </div>
+            <div class="file-path-wrapper">
+                <input class="file-path validate" type="text">
+            </div>
+        </div>
+        <div id="mainNav" class="row">
+            <div class="col s12">
+                <ul class="tabs">
+                    <li class="tab col s3"><a href="#player">Player</a></li>
+                    <li class="tab col s3"><a href="#pkmn">Pokémon</a></li>
+                    <li class="tab col s3"><a href="#items">Items</a></li>
+                    <li class="tab col s3"><a href="#record">Record</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="player">
+            <div class="row">
+                <div class="input-field col s8 m6">
+                    <i class="material-icons prefix">account_circle</i>
+                    <input type="text" id="trainerName" />
+                    <label for="trainerName">Trainer Name</label>
+                </div>
+                <div class="input-field col s4 m2">
+                    <input type="text" id="trainerId" />
+                    <label for="trainerId">Trainer Id</label>
+                </div>
+                <div class="input-field col s12 m4">
+                    <input type="text" id="rivalName" />
+                    <label for="rivalName">Rival Name</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s7 l3">
+                    <input type="text" id="trainerMoney" />
+                    <label for="trainerMoney">Money</label>
+                </div>
+                <div class="input-field col s5 l2">
+                    <input type="text" id="trainerCoins" />
+                    <label for="trainerCoins">Coins</label>
+                </div>
+                <div class="input-field col s7 l4">
+                    <input type="text" id="playTime" />
+                    <label for="playTime">Play Time</label>
+                </div>
+                <div class="input-field col s5 l3">
+                    <input type="text" id="pikachuFriendship" />
+                    <label for="pikachuFriendship">Pikachu Friendship</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s6 m3">
+                    <label >
+                        <input type="checkbox" id='boulderBadge' />
+                        <span>Boulder</span>
+                    </label>
+                </div>
+                <div class="col s6 m3">
+                    <label>
+                        <input type="checkbox" id='cascadeBadge' />
+                        <span>Cascade</span>
+                    </label>
+                </div>
+                <div class="col s6 m3">
+                    <label>
+                        <input type="checkbox" id='thunderBadge' />
+                        <span>Thunder</span>
+                    </label>
+                </div>
+                <div class="col s6 m3">
+                    <label>
+                        <input type="checkbox" id='rainbowBadge' />
+                        <span>Rainbow</span>
+                    </label>
+                </div>
+                <div class="col s6 m3">
+                    <label>
+                        <input type="checkbox" id='soulBadge' />
+                        <span>Soul</span>
+                    </label>
+                </div>
+                <div class="col s6 m3">
+                    <label>
+                        <input type="checkbox" id='marshBadge' />
+                        <span>Marsh</span>
+                    </label>
+                </div>
+                <div class="col s6 m3">
+                    <label>
+                        <input type="checkbox" id='volcanoBadge' />
+                        <span>Volcano</span>
+                    </label>
+                </div>
+                <div class="col s6 m3">
+                    <label>
+                        <input type="checkbox" id='earthBadge' />
+                        <span>Earth</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div id="items" class="row">
+            <div class="col s6">
+                <div class="card-panel">
+                    <h5>Inventory</h5>
+                    <ul class="collection size40" id="itemBag"></ul>
+                </div>
+            </div>
+            <div class="col s6">
+                <div class="card-panel">
+                    <h5>Item Box</h5>
+                    <ul class="collection size40" id="itemBox"></ul>
+                </div>
+            </div>
+        </div>
+        <div id="record" class="row">
+            <div class="col s6">
+                <div class="card-panel">
+                    <h5>Pokédex Completion</h5>
+                    <ul class="collection size40" id="pokedexEntries" ></ul>
+                </div>
+            </div>
+            <div class="col s6">
+                <div class="card-panel">
+                    <h5>Hall of Fame</h5>
+                    <ul class="collection size40" id="hallOfFame" ></ul>
+                </div>
+            </div>
+        </div>
+        <div id="pkmn" class="row">
+            <div class="col s12 l7">
+                <div class="card-panel">
+                    <h5>Pokémon</h5>
+                    <form>
+                        <div class="row">
+                            <div class="input-field col s7">
+                                <input type="text" id="pkmnNickname" />
+                                <label for="pkmnNickname">Nickname</label>
+                            </div>
+                            <div class="input-field col s5">
+                                <input type="text" id="pkmnSpecies" />
+                                <label for="pkmnSpecies">Species</label>
+                            </div>
+                            <div class="input-field col s2">
+                                <input type="text" id="pkmnLevel" />
+                                <label for="pkmnLevel">Level</label>
+                            </div>
+                            <div class="input-field col s5">
+                                <input type="text" id="pkmnExperience" />
+                                <label for="pkmnExperience">Experience</label>
+                            </div>
+                            <div class="input-field col s5">
+                                <input type="text" id="pkmnExpToNextLevel" />
+                                <label for="pkmnExpToNextLevel">To Next Level</label>
+                            </div>
+                            <div class="input-field col s2">
+                                <input type="text" id="pkmnCurHp" />
+                                <label for="pkmnCurHp">HP</label>
+                            </div>
+                            <div class="input-field col s3">
+                                <input type="text" id="pkmnStatus" />
+                                <label for="pkmnStatus">Status</label>
+                            </div>
+                            <div class="input-field col s5">
+                                <input type="text" id="pkmnHeldItem" />
+                                <label for="pkmnHeldItem">Held Item</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <input type="text" id="pkmnType" />
+                                <label for="pkmnType">Type</label>
+                            </div>
+                            <div class="input-field col s4">
+                                <input type="text" id="pkmnOtIdNumber" />
+                                <label for="pkmnOtIdNumber">OT id</label>
+                            </div>
+                            <div class="input-field col s8">
+                                <input type="text" id="pkmnOtName" />
+                                <label for="pkmnOtName">OT name</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <ul class="collection col s6">
+                                <li class="collection-item" id="pkmnAttack">
+                                    Attack
+                                    <span id="pkmnAttackValue" class="secondary-content"/>
+                                </li>
+                                <li class="collection-item" id="pkmnDefense">
+                                    Defense
+                                    <span id="pkmnDefenseValue" class="secondary-content"/>
+                                </li>
+                                <li class="collection-item" id="pkmnSpeed">
+                                    Speed
+                                    <span id="pkmnSpeedValue" class="secondary-content"/>
+                                </li>
+                                <li class="collection-item" id="pkmnSpecial">
+                                    Special
+                                    <span id="pkmnSpecialValue" class="secondary-content"/>
+                                </li>
+                                <li class="collection-item" id="pkmnHpStat">
+                                    HP
+                                    <span id="pkmnHpStatValue" class="secondary-content"/>
+                                </li>
+                            </ul>
+                            <ul class="collection col s6">
+                                <li class="collection-item">
+                                    <span id="move-1-name">--</span>
+                                    <span id="move-1-pp" class="secondary-content">-</span>
+                                </li>
+                                <li class="collection-item">
+                                    <span id="move-2-name">--</span>
+                                    <span id="move-2-pp" class="secondary-content">-</span>
+                                </li>
+                                <li class="collection-item">
+                                    <span id="move-3-name">--</span>
+                                    <span id="move-3-pp" class="secondary-content">-</span>
+                                </li>
+                                <li class="collection-item">
+                                    <span id="move-4-name">--</span>
+                                    <span id="move-4-pp" class="secondary-content">-</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col s12 l5" id="pkmn-boxes">
+                <div class="card-panel">
+                    <div class="input-field">
+                        <select id="pkmn-box-select">
+                            <option value="0" selected>Party</option>
+                            <option value="-1">DayCare</option>
+                            <option value="1">PC Box 1</option>
+                            <option value="2">PC Box 2</option>
+                            <option value="3">PC Box 3</option>
+                            <option value="4">PC Box 4</option>
+                            <option value="5">PC Box 5</option>
+                            <option value="6">PC Box 6</option>
+                            <option value="7">PC Box 7</option>
+                            <option value="8">PC Box 8</option>
+                            <option value="9">PC Box 9</option>
+                            <option value="10">PC Box 10</option>
+                            <option value="11">PC Box 11</option>
+                            <option value="12">PC Box 12</option>
+                        </select>
+                    </div>
+                    <ul class="collection size30" id="pkmnBox"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="pkdata.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="pkmn.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="savefile.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="textcodec.js" charset="UTF-8"></script>
+    <script>
+        M.AutoInit();
+
+        const MIN_FILE_SIZE = 0x3524;
+        let sav = null;
+        const DAYCARE = -1;
+        const PARTY = 0;
+        let selectedBox = 0;
+        let selectedPkmn = -1;
+
+        document.querySelector("#pkmn-box-select").addEventListener('change', function (event) {
+            selectedBox = parseInt(event.target.value, 10);
+            if (sav != null) {
+                setPkmnList(selectedBox);
+            }
+        });
+
+        function setPkmnList(selected) {
+            switch(selectedBox){
+                case DAYCARE: 
+                    setEntries("#pkmnBox", sav.daycare, createPkmnEntry); 
+                    return;
+                case PARTY: 
+                    setEntries("#pkmnBox", sav.party, createPkmnEntry); 
+                    return;
+                default: 
+                    setEntries("#pkmnBox", sav.boxes[selectedBox - 1], createPkmnEntry); 
+                    return;
+            }
+            
+        }
+        
+        document.querySelector('#inputFile').addEventListener('change', function() {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const arrayBuffer = this.result;
+                const array = new Uint8Array(arrayBuffer);
+
+                const codec = AMERICA_TEXT_CODEC;
+                sav = new SaveFile(array, codec);
+
+
+                if(array.length <= MIN_FILE_SIZE) {
+                    console.log("not a valid file, size is less than " + MIN_FILE_SIZE);
+                }
+
+                document.querySelector('#trainerName').value = sav.trainerName;
+                document.querySelector('#trainerMoney').value = '$' + sav.trainerMoney;
+                document.querySelector('#trainerCoins').value = sav.trainerCoins;
+                document.querySelector('#trainerId').value = sav.trainerId;
+                document.querySelector("#rivalName").value = sav.rivalName;
+
+                document.querySelector("#boulderBadge").checked = sav.badges.boulder;
+                document.querySelector("#cascadeBadge").checked = sav.badges.cascade;
+                document.querySelector("#thunderBadge").checked = sav.badges.thunder;
+                document.querySelector("#rainbowBadge").checked = sav.badges.rainbow;
+                document.querySelector("#soulBadge").checked    = sav.badges.soul;
+                document.querySelector("#marshBadge").checked   = sav.badges.marsh;
+                document.querySelector("#volcanoBadge").checked = sav.badges.volcano;
+                document.querySelector("#earthBadge").checked   = sav.badges.earth;
+
+                document.querySelector("#playTime").value  = sav.playTime;
+                document.querySelector("#pikachuFriendship").value = sav.pikaFriendship;
+
+                setEntries("#itemBag", sav.itemBag, createItemEntry); 
+                setEntries("#itemBox", sav.itemBox, createItemEntry);
+                setEntries("#pokedexEntries", sav.pokedex, createDexEntry);
+                setEntries("#hallOfFame", sav.hallOfFame, createHallEntry);
+                setPkmnList();
+
+                M.updateTextFields();
+            }
+            reader.readAsArrayBuffer(this.files[0]);
+        }, false);
+
+        function onPkmnClick(event) {
+            const identifier = event.target.id;
+            document.querySelector("#" + identifier).classList.add('selected');
+            const parts = identifier.split('-');
+            const index = parts[1];
+            selectedPkmn = index - 1;
+            if (selectedBox == 0) {
+                displayPkmn(sav.party[selectedPkmn]);
+            } else {
+                displayPkmn(sav.boxes[selectedBox -1][selectedPkmn]);
+            }
+        }
+
+        function setEntries(selector, list, entryCreator) {
+            // cleaning the list:
+            document.querySelector(selector).textContent = '';
+            for (const element of list) {
+                const entry = entryCreator (element);
+                document.querySelector(selector).appendChild(entry);
+            }
+        }
+
+        function displayPkmn (pkmn) {
+            document.querySelector("#pkmnNickname").value = pkmn.nickname;
+            document.querySelector("#pkmnSpecies").value = pkmn.species.name;
+            document.querySelector("#pkmnLevel").value = pkmn.level;
+            document.querySelector("#pkmnExperience").value = pkmn.experience;
+            document.querySelector("#pkmnExpToNextLevel").value = pkmn.expToNextLevel;
+            document.querySelector("#pkmnCurHp").value = pkmn.currentHp + "/" + pkmn.maxHp;
+            document.querySelector("#pkmnStatus").value = pkmn.status;
+            document.querySelector("#pkmnHeldItem").value =  pkmn.heldItem;
+            document.querySelector("#pkmnType").value = 
+                (pkmn.type1 == pkmn.type2) ? pkmn.type1 : pkmn.type1 + '/' + pkmn.type2;
+
+            document.querySelector("#pkmnOtIdNumber").value = pkmn.otIdNumber;
+            document.querySelector("#pkmnOtName").value = pkmn.otName;
+            setStatStr("#pkmnAttackValue", pkmn.attack, pkmn.attackEv, pkmn.attackIv);
+            setStatStr("#pkmnDefenseValue", pkmn.defense, pkmn.defenseEv, pkmn.defenseIv);
+            setStatStr("#pkmnSpeedValue", pkmn.speed, pkmn.attackEv, pkmn.attackIv);
+            setStatStr("#pkmnSpecialValue", pkmn.special, pkmn.specialEv, pkmn.specialIv);
+            setStatStr("#pkmnHpStatValue", pkmn.maxHp, pkmn.hpEv, pkmn.hpIv);
+            for (let i = 0; i < 4; ++i) {
+                const move = pkmn.moves[i];
+                if (move != null) {
+                    const prefix = "#move-" + (i+1);
+                    let suffix = null;
+                    switch (move.appliedPpUps) {
+                        case 3: suffix = '‴'; break;
+                        case 2: suffix = '″'; break;
+                        case 1: suffix = '′'; break;
+                        case 0: suffix = ''; break;
+                        default: suffix = '*'; break;
+                    }
+                    setText(prefix + "-name", "#" + move.index + " " + move.name);
+                    setText(prefix + "-pp", move.currentPp + "/" + move.maxPp + suffix);
+                }
+            }
+            M.updateTextFields();
+        }
+
+        function setStatStr(selector, value, ev, iv) {
+            return setText(selector, value + "-EV:" + ev + "-IV:" + iv);
+        }
+
+        function createHallEntry(entry) {
+            const ul = document.createElement('ul');
+            ul.classList.add('collection');
+            for (const pkmn of entry.team) {
+                const span = document.createElement('span');
+                span.classList.add('secondary-content');
+                span.textContent = pkmn.level;
+
+                const noNick = pkmn.speciesName.toUpperCase() == pkmn.nickname.toUpperCase();
+                const displayName = (noNick) ? 
+                    pkmn.speciesName : pkmn.speciesName + " - " + pkmn.nickname;
+
+                const innerIl = document.createElement('li');
+                innerIl.textContent = "#" + pkmn.speciesNumber + " " + displayName;
+                innerIl.appendChild(span);
+                ul.appendChild(innerIl);
+            }
+
+            const li = document.createElement('li');
+            li.appendChild(document.createTextNode('ENTRY #' + entry.index));
+            li.appendChild(ul);
+            return li;
+        }
+
+        function pad(src, size, paddingChar) {
+            let str = src.toString();
+            while (num.length < size) { 
+                str = paddingChar + str;
+            }
+            return str;
+        }
+
+        function setText (selector, value) {
+            document
+                .querySelector(selector)
+                .textContent = value;
+        }
+
+        function createPkmnEntry(pkmn) {
+            const hpBar = document.createElement('input')
+            hpBar.style.setProperty('width','auto');
+            hpBar.type = 'range'
+            hpBar.min = 0;
+            hpBar.max = pkmn.maxHp;
+            hpBar.value = pkmn.currentHp;
+            const li = document.createElement('li');
+            li.classList.add("collection-item");
+            li.classList.add("clickable");
+            li.appendChild(document.createTextNode(
+                "#" + pkmn.number + " " + pkmn.species.name + " L" + pkmn.level));
+            // <input type="range" name="price" id="price" min="50000" max="500000" step="100" value="250000">
+            li.appendChild(document.createElement("br"));
+            li.appendChild(document.createTextNode('HP: '));
+            li.appendChild(hpBar);
+            li.onclick = onPkmnClick;
+            li.id = 'pkmn-' + pkmn.position;
+            li.appendChild(document.createTextNode(pkmn.currentHp + '/' + pkmn.maxHp));
+            return li;
+        }
+
+        function createDexEntry (pkmn) {
+            let li = document.createElement('li');
+            li.classList.add("collection-item");
+            if (!pkmn.owned && pkmn.seen) {
+                li.style.setProperty('background-color','#e4e4e4')
+            } else {
+                let span = document.createElement('span');
+                span.classList.add('secondary-content');
+                span.appendChild(document.createTextNode( pkmn.owned ? 'owned' : 'seen' ));
+                li.appendChild(span);
+            }
+            li.appendChild(document.createTextNode("#" + pkmn.index + ' ' + pkmn.name));
+            return li;
+        }
+
+        function createItemEntry(item) {
+
+            let span = document.createElement('span');
+            span.classList.add('secondary-content');
+            span.appendChild(document.createTextNode("x" + item.count))
+
+            let div = document.createElement('div')
+            div.appendChild(document.createTextNode(item.name));
+            div.appendChild(span);
+
+            let li = document.createElement('li');
+            li.classList.add("collection-item");
+            li.appendChild(div); 
+            return li;
+        }
+
+</script>
+</body>
