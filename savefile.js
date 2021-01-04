@@ -87,7 +87,7 @@ class SaveFile {
         const otName = inUse ? this.file.getDelimitedString(0x2D00) : null;
         return {
             inUse: inUse,
-            pkmn: inUse ? new Pkmn(this, 0x2D0B, 0, false, otName, nickname, -1) : null
+            pkmn: inUse ? new Pkmn(this.file, 0x2D0B, 0, false, otName, nickname, -1) : null
         };
     }
 
