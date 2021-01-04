@@ -1,4 +1,3 @@
-
 const TRAINER_NAME_START_POS = 0x2598;
 const TRAINER_ID_POS = 0x2605;
 const TRAINER_MONEY_START_POS = 0x25F3;
@@ -16,61 +15,92 @@ const PKMN_PARTY_DATA_POS = 0x2F2C;
 const HALL_OF_FAME_ROOM_POS = 0x0598;
 const HALL_OF_FAME_COUNT_POS = 0x284E;
 
+const TERM_LEN = -1;
+
+const SAV_FILE_SIZE = 32768;
+
 class SaveFile {
-    constructor(array, codec) {
-        this.array = array;
-        this.codec = codec;
+    constructor(binaryFile) {
+        this.file = binaryFile;
+        this.calcChecksums();
+    }
+
+    get bytes() {
+        this.calcChecksums();
+        return this.file.array;
     }
 
     get trainerName() {
-        return this.getDelimitedString(TRAINER_NAME_START_POS);
+        return this.file.getDelimitedString(TRAINER_NAME_START_POS);
+    }
+
+    set trainerName(newValue) {
+        this.file.setString(TRAINER_NAME_START_POS, newValue, 11);
+    }
+
+    calcChecksums() {
+        const currentChecksum = this.file.getChecksum(0x2598, 0x3522);
+        if (this.checksum == currentChecksum) {
+            console.log('checksum matches (' + this.checksum + ")")
+        } else {
+            console.log('checksum fail ' + this.checksum + "!=" + currentChecksum);
+            console.log('checksum has been reset');
+            this.checksum = currentChecksum;
+        }
     }
 
     get trainerMoney() {
-        return this.getBinaryEncodedDecimal(TRAINER_MONEY_START_POS, 0x03);
+        return this.file.getBinaryEncodedDecimal(TRAINER_MONEY_START_POS, 0x03);
     }
 
     get trainerCoins() {
-        return this.getBinaryEncodedDecimal(TRAINER_COINS_START_POS, 0x02);
+        return this.file.getBinaryEncodedDecimal(TRAINER_COINS_START_POS, 0x02);
     }
 
     get trainerId() {
-        return this.getNumber(TRAINER_ID_POS, 0x02);
+        return this.file.getUint16(TRAINER_ID_POS);
     }
 
     get rivalName() {
-        return this.getDelimitedString(RIVAL_NAME_START_POS);
+        return this.file.getDelimitedString(RIVAL_NAME_START_POS);
+    }
+
+    set rivalName() {
+        this.file.setString(RIVAL_NAME_START_POS, newValue, 11);
     }
 
     get trainerStarter () {
         return PKMN_NAME_MAP[
                 PKMN_INDEX_TO_NUMBER_MAP[
-                    this.array[0x29C3]]];
+                    this.file.getUint8(0x29C3)]];
     }
 
     get rivalStarter () {
         return PKMN_NAME_MAP[
                 PKMN_INDEX_TO_NUMBER_MAP[
-                    this.array[0x29C1]]];
+                    this.file.getUint8(0x29C1)]];
     }
 
     get daycare () {
-        const inUse = this.array[0x2CF4] != 0x0;
-        const nickname = inUse ? this.getDelimitedString(0x2CF5) : null;
-        const otName = inUse ? this.getDelimitedString(0x2D00) : null;
+        const inUse = this.file.getUint8[0x2CF4] != 0x0;
+        const nickname = inUse ? this.file.getDelimitedString(0x2CF5) : null;
+        const otName = inUse ? this.file.getDelimitedString(0x2D00) : null;
         return {
             inUse: inUse,
             pkmn: inUse ? new Pkmn(this, 0x2D0B, 0, false, otName, nickname, -1) : null
-            //0x2D0B, pkmn box data format
         };
     }
 
     get checksum () {
-        return this.array[0x3523];
+        return this.file.array[0x3523];
+    }
+
+    set checksum (value) {
+        this.file.setUint8(0x3523, value);
     }
 
     get currentBox () {
-        return this.getNumber(0x284C, 2) & 0x7F;
+        return this.file.getUint16(0x284C) & 0x7F;
     }
 
     get boxes () {
@@ -92,7 +122,7 @@ class SaveFile {
     }
 
     get badges() {
-        const badgeByte = this.array[0x2602];
+        const badgeByte = this.file.array[0x2602];
         return {
             boulder: (badgeByte && 0x80 == 0x80),
             cascade: (badgeByte && 0x40 == 0x40),
@@ -106,13 +136,13 @@ class SaveFile {
     }
 
     get playTime() {
-        return this.array[PLAY_TIME_HOURS_POS] + ":" + 
-               this.array[PLAY_TIME_MINS_POS] + ":" + 
-               this.array[PLAY_TIME_SECS_POS];
+        return this.file.array[PLAY_TIME_HOURS_POS] + ":" + 
+               this.file.array[PLAY_TIME_MINS_POS] + ":" + 
+               this.file.array[PLAY_TIME_SECS_POS];
     }
 
     get pikaFriendship () {
-        return this.array[PIKACHU_FRIENDSHIP_POS];
+        return this.file.array[PIKACHU_FRIENDSHIP_POS];
     }
 
 
@@ -125,7 +155,7 @@ class SaveFile {
     }
 
     get pokedex() {
-        let result = {array: this.array}
+        let result = {array: this.file.array}
         result[Symbol.iterator] = function* () {
             for (let i = 0; i < 151; ++i){
                 const byteIndex = i >> 3; 
@@ -151,10 +181,9 @@ class SaveFile {
     }
 
     getPokemonList(basePos, inParty, boxIndex) {
-        const savFile = this; // used in getters
         const capacity = inParty ? 6 : 20;
         const pkmnSize = inParty ? 0x2C : 0x21
-        let count = this.array[basePos];
+        let count = this.file.array[basePos];
         let result =[]; 
         const otNameListOffset =  0x2 + capacity + (pkmnSize * capacity);
         const nicknameListOffset = 0x2 + capacity + (pkmnSize * capacity) + (0xB * capacity);
@@ -164,24 +193,24 @@ class SaveFile {
             const pkmnBase = basePos + 0x02 + capacity + (i * pkmnSize);
             const otNamePos = basePos + otNameListOffset + (0xB * i);
             const nickNamePos = basePos + nicknameListOffset + ( 0xB * i);
-            const otName = savFile.getDelimitedString(otNamePos);
-            const nickname = savFile.getDelimitedString(nickNamePos);
+            const otName = this.file.getDelimitedString(otNamePos);
+            const nickname = this.file.getDelimitedString(nickNamePos);
 
-            result.push(new Pkmn(this, pkmnBase, i, inParty, otName, nickname, boxIndex));
+            result.push(new Pkmn(this.file, pkmnBase, i, inParty, otName, nickname, boxIndex));
         }
         return result;
     }
 
     get hallOfFame () {
         const result = [];
-        const totalCount = this.array[HALL_OF_FAME_COUNT_POS];
+        const totalCount = this.file.array[HALL_OF_FAME_COUNT_POS];
         const count = totalCount > 50 ? 50 : totalCount;
         for (let i = count - 1; i >= 0; --i) {
             const recordBase = HALL_OF_FAME_ROOM_POS + (0x60 * i);
             const record = [];
             for (let i = 0; i < 6; ++i) {
                 const pkmnBase = recordBase + (0x10 * i);
-                const speciesNumber = PKMN_INDEX_TO_NUMBER_MAP[this.array[pkmnBase]];
+                const speciesNumber = PKMN_INDEX_TO_NUMBER_MAP[this.file.array[pkmnBase]];
                 if (!speciesNumber || speciesNumber === -1) {
                     break; // early break if can't resolve pokemon.
                 }
@@ -189,8 +218,8 @@ class SaveFile {
                     {
                         speciesNumber: PKMN_BY_NAT_NUMBER[speciesNumber].number,
                         speciesName: PKMN_BY_NAT_NUMBER[speciesNumber].name,
-                        level: this.array[pkmnBase + 0x01],
-                        nickname: this.getDelimitedString(pkmnBase + 0x02)
+                        level: this.file.array[pkmnBase + 0x01],
+                        nickname: this.file.getDelimitedString(pkmnBase + 0x02)
                     }
                 );
             }
@@ -204,81 +233,23 @@ class SaveFile {
 
     getItemList(basePos) {
         const result = [];
-        const count = this.array[basePos];
+        const count = this.file.array[basePos];
         for (let i = 0; i < count; ++i ) {
             const index = basePos + (i *2) + 1;
-            if (this.array[index] == 0xFF) {
+            if (this.file.array[index] == 0xFF) {
                 break;
             } else {
                 result.push({
-                    index: this.array[index],
-                    name: GEN_I_ITEM_NAME_MAP[this.array[index]],
-                    count: this.array[index + 1 ]
+                    index: this.file.array[index],
+                    name: GEN_I_ITEM_NAME_MAP[this.file.array[index]],
+                    count: this.file.array[index + 1]
                 });
             }
         }
         return result;
     }
-
-/*---------------------------------------------------------------------------------
------------------------------------------------------------------------------------
-UTILS
------------------------------------------------------------------------------------
----------------------------------------------------------------------------------*/
-
-    getDelimitedString (startPos) {
-        const endPos = this.findStringLength(startPos);
-        return this.getString(startPos, endPos);
-    }
-
-    findStringLength (startPos)  {
-        let offset = 0;
-        while (offset + startPos < this.array.length) {
-            if (this.codec.isTerminating(this.array[offset + startPos ])) {
-                return offset + startPos;
-            }
-            ++offset;
-        }
-        return -1;
-    }
-
-    getString (startPos, endPos) {
-        let result = '';
-        for (let i = startPos; i < endPos; ++i) {
-            const byte = this.array[i];
-            result += (this.codec.decode(byte));
-        }
-        return result;
-    }
-
-    getNumber (startPos, length) {
-        let result = 0;
-        for (let i = 0; i < length; ++i) {
-            const byte = this.array[ startPos + i];
-            result += (byte  << ((length - i - 1) * 8));
-        }
-        return result;
-    }
-
-    getHiNib(byte) {
-        return byte >> 4;
-    }
-
-    getLoNib(byte) {
-        return byte & 0x0F;
-    }
-
-    getBinaryEncodedDecimal(startPos, length) {
-        let result = 0;
-        for (let i = 0; i < length; ++i) {
-            const byte = this.array[ startPos + i];
-            const hhhh = this.getHiNib(byte);
-            const llll = this.getLoNib(byte);
-            result += ((hhhh * 10) +llll) * (100**(length - i -1));
-        }
-        return result;
-    }
 }
+
 
 
 

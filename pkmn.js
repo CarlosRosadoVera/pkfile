@@ -2,10 +2,10 @@
 
 
 class Pkmn {
-    constructor (savFile, pkmnBase, index, inParty, otName, nickname, boxIndex) {
-        this.$savFile = savFile; // to use in getters
+    constructor (binFile, pkmnBase, index, inParty, otName, nickname, boxIndex) {
+        this.$binFile = binFile; // to use in getters
         this.$pkmnBase = pkmnBase; // to use in getters
-        const speciesIndex = savFile.array[pkmnBase];
+        const speciesIndex = binFile.array[pkmnBase];
 
         this.inParty = inParty;
         this.boxIndex = inParty ? -1 : boxIndex;
@@ -13,69 +13,69 @@ class Pkmn {
         this.nickname = nickname;
         this.number   = PKMN_INDEX_TO_NUMBER_MAP[speciesIndex];
         this.species  = PKMN_BY_NAT_NUMBER[PKMN_INDEX_TO_NUMBER_MAP[speciesIndex] -1];
-        this.currentHp = savFile.getNumber(pkmnBase + 0x1, 2);
-        this.levelFromBox = savFile.array[pkmnBase+0x3];
-        this.status   = this.getStatusName(savFile.array[pkmnBase+0x4]);
-        this.type1    = this.getTypeName(savFile.array[pkmnBase + 0x5]);
-        this.type2    = this.getTypeName(savFile.array[pkmnBase + 0x6]);
-        this.heldItem = this.getHeldItem(savFile.array[pkmnBase + 0x7]);
+        this.currentHp = binFile.getUint16(pkmnBase + 0x1);
+        this.levelFromBox = binFile.array[pkmnBase+0x3];
+        this.status   = this.getStatusName(binFile.array[pkmnBase+0x4]);
+        this.type1    = this.getTypeName(binFile.array[pkmnBase + 0x5]);
+        this.type2    = this.getTypeName(binFile.array[pkmnBase + 0x6]);
+        this.heldItem = this.getHeldItem(binFile.array[pkmnBase + 0x7]);
         this.moves = [
             this.getMove(pkmnBase, 0x08, 0x1D),
             this.getMove(pkmnBase, 0x09, 0x1E),
             this.getMove(pkmnBase, 0x0A, 0x1F),
             this.getMove(pkmnBase, 0x0B, 0x20)
         ];
-        this.otIdNumber = savFile.getNumber(pkmnBase + 0x0C, 2);
+        this.otIdNumber = binFile.getUint16(pkmnBase + 0x0C);
         this.otName     = otName;
-        this.experience = savFile.getNumber(pkmnBase + 0x0E, 3);
-        this.hpEv       = savFile.getNumber(pkmnBase + 0x11,2);
-        this.attackEv   = savFile.getNumber(pkmnBase + 0x13,2);
-        this.defenseEv  = savFile.getNumber(pkmnBase + 0x15,2);
-        this.speedEv    = savFile.getNumber(pkmnBase + 0x17,2);
-        this.specialEv  = savFile.getNumber(pkmnBase + 0x19,2);
+        this.experience = binFile.getUint24(pkmnBase + 0x0E);
+        this.hpEv       = binFile.getUint16(pkmnBase + 0x11);
+        this.attackEv   = binFile.getUint16(pkmnBase + 0x13);
+        this.defenseEv  = binFile.getUint16(pkmnBase + 0x15);
+        this.speedEv    = binFile.getUint16(pkmnBase + 0x17);
+        this.specialEv  = binFile.getUint16(pkmnBase + 0x19);
         this.hpIv       = this.calcHpIv(pkmnBase + 0x1B, pkmnBase + 0x1C);
-        this.attackIv   = savFile.getHiNib(savFile.array[pkmnBase + 0x1B]);
-        this.defenseIv  = savFile.getLoNib(savFile.array[pkmnBase + 0x1B]);
-        this.speedIv    = savFile.getHiNib(savFile.array[pkmnBase + 0x1C]);
-        this.specialIv  = savFile.getLoNib(savFile.array[pkmnBase + 0x1C]);
+        this.attackIv   = binFile.getHiNib(binFile.array[pkmnBase + 0x1B]);
+        this.defenseIv  = binFile.getLoNib(binFile.array[pkmnBase + 0x1B]);
+        this.speedIv    = binFile.getHiNib(binFile.array[pkmnBase + 0x1C]);
+        this.specialIv  = binFile.getLoNib(binFile.array[pkmnBase + 0x1C]);
     }
 
     get level() {
         return this.inParty ? 
-            this.$savFile.array[this.$pkmnBase + 0x21] : 
+            this.$binFile.array[this.$pkmnBase + 0x21] : 
             this.species.ex.levelAt(this.experience);
     }
 
     get maxHp() {
         return this.inParty ? 
-            this.$savFile.getNumber(this.$pkmnBase + 0x22, 2) : 
+            this.$binFile.getUint16(this.$pkmnBase + 0x22) : 
             this.calcHpStat(this.hpIv, this.hpEv, this.species.hp, this.level);
     }
 
     get attack() {
         return this.inParty ? 
-            this.$savFile.getNumber(this.$pkmnBase + 0x24, 2) : 
+            this.$binFile.getUint16(this.$pkmnBase + 0x24) : 
             this.calcStat(
                 this.attackIv, this.attackEv, this.species.atk, this.level);
     }
 
     get defense() {
         return this.inParty ? 
-            this.$savFile.getNumber(this.$pkmnBase + 0x26, 2) : 
+            this.$binFile.getUint16(this.$pkmnBase + 0x26) : 
             this.calcStat(
                 this.defenseIv, this.defenseEv, this.species.def, this.level);
     }
 
     get speed()  {  
         return this.inParty ? 
-            this.$savFile.getNumber(this.$pkmnBase + 0x28, 2) : 
+            this.$binFile.getUint16(this.$pkmnBase + 0x28) : 
             this.calcStat(
                 this.speedIv, this.speedEv, this.species.spd, this.level);
     }
 
     get special ()  {  
         return this.inParty ? 
-            this.$savFile.getNumber(this.$pkmnBase + 0x2A, 2) : 
+            this.$binFile.getUint16(this.$pkmnBase + 0x2A) : 
             this.calcStat(
                 this.specialIv, this.specialEv, this.species.spc, this.level);
     }
@@ -123,8 +123,8 @@ class Pkmn {
     }
 
     calcHpIv(adIvPos, ssIvPos) {
-        const adIv = this.$savFile.array[adIvPos];
-        const ssIv = this.$savFile.array[ssIvPos];
+        const adIv = this.$binFile.array[adIvPos];
+        const ssIv = this.$binFile.array[ssIvPos];
         return ((adIv & 0x10) >> 1) + // 0001 0000 >>   1000
                ((adIv & 0x1 ) << 2) + // 0000 0001 >> 0100
                ((ssIv & 0x10) >> 3) +// 0001 0000 >>   0010
@@ -171,12 +171,12 @@ class Pkmn {
     }
 
     getMove(pkmnBase, indexPos, ppPos) {
-        const index = this.$savFile.array[pkmnBase + indexPos];
+        const index = this.$binFile.array[pkmnBase + indexPos];
         const move = INDEX_TO_MOVE[index];
         if (index == 0) {
             return null;
         }
-        const ppVal = this.$savFile.array[pkmnBase + ppPos];
+        const ppVal = this.$binFile.array[pkmnBase + ppPos];
         const appliedPpUps = (ppVal & 0xC0) >> 0x6;
         return {
             index: index,

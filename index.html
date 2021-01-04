@@ -8,6 +8,12 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <style>
+
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+
+        * {
+          font-family: 'Roboto Mono', monospace;
+        }
         .clickable {
             cursor: pointer;
         }
@@ -19,18 +25,33 @@
             max-height: 33rem;
             overflow: scroll;
         }
+        .barElement {
+            float: right;
+        }
+        .halfMargin {
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
 
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="file-field input-field row">
-            <div class="btn">
-                <span>File</span>
-                <input type="file" id="inputFile" >
+        <div class="row">
+            <div class="halfMargin file-field input-field col s6">
+                <div class="waves-effect waves-light btn">
+                    <span>File</span>
+                    <input type="file" id="inputFile" >
+                </div>
+                <div class="file-path-wrapper">
+                    <input class="file-path validate" type="text">
+                </div>
             </div>
-            <div class="file-path-wrapper">
-                <input class="file-path validate" type="text">
+            <div class="halfMargin col s6">
+                <a class="waves-effect waves-light btn barElement" id="download">
+                    <i class="material-icons left">file_download</i>
+                    download
+                </a>
             </div>
         </div>
         <div id="mainNav" class="row">
@@ -44,87 +65,89 @@
             </div>
         </div>
         <div id="player">
-            <div class="row">
-                <div class="input-field col s8 m6">
-                    <i class="material-icons prefix">account_circle</i>
-                    <input type="text" id="trainerName" />
-                    <label for="trainerName">Trainer Name</label>
+            <div class="card-panel">
+                <div class="row">
+                    <div class="input-field col s8 m6">
+                        <i class="material-icons prefix">account_circle</i>
+                        <input type="text" id="trainerName" />
+                        <label for="trainerName">Trainer Name</label>
+                    </div>
+                    <div class="input-field col s4 m2">
+                        <input type="text" id="trainerId" disabled/>
+                        <label for="trainerId">Trainer Id</label>
+                    </div>
+                    <div class="input-field col s12 m4">
+                        <input type="text" id="rivalName" />
+                        <label for="rivalName">Rival Name</label>
+                    </div>
                 </div>
-                <div class="input-field col s4 m2">
-                    <input type="text" id="trainerId" />
-                    <label for="trainerId">Trainer Id</label>
+                <div class="row">
+                    <div class="input-field col s7 l3">
+                        <input type="text" id="trainerMoney" disabled/>
+                        <label for="trainerMoney">Money</label>
+                    </div>
+                    <div class="input-field col s5 l2">
+                        <input type="text" id="trainerCoins" disabled/>
+                        <label for="trainerCoins">Coins</label>
+                    </div>
+                    <div class="input-field col s7 l4">
+                        <input type="text" id="playTime" disabled/>
+                        <label for="playTime">Play Time</label>
+                    </div>
+                    <div class="input-field col s5 l3">
+                        <input type="text" id="pikachuFriendship" disabled/>
+                        <label for="pikachuFriendship">Pikachu Friendship</label>
+                    </div>
                 </div>
-                <div class="input-field col s12 m4">
-                    <input type="text" id="rivalName" />
-                    <label for="rivalName">Rival Name</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="input-field col s7 l3">
-                    <input type="text" id="trainerMoney" />
-                    <label for="trainerMoney">Money</label>
-                </div>
-                <div class="input-field col s5 l2">
-                    <input type="text" id="trainerCoins" />
-                    <label for="trainerCoins">Coins</label>
-                </div>
-                <div class="input-field col s7 l4">
-                    <input type="text" id="playTime" />
-                    <label for="playTime">Play Time</label>
-                </div>
-                <div class="input-field col s5 l3">
-                    <input type="text" id="pikachuFriendship" />
-                    <label for="pikachuFriendship">Pikachu Friendship</label>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s6 m3">
-                    <label >
-                        <input type="checkbox" id='boulderBadge' />
-                        <span>Boulder</span>
-                    </label>
-                </div>
-                <div class="col s6 m3">
-                    <label>
-                        <input type="checkbox" id='cascadeBadge' />
-                        <span>Cascade</span>
-                    </label>
-                </div>
-                <div class="col s6 m3">
-                    <label>
-                        <input type="checkbox" id='thunderBadge' />
-                        <span>Thunder</span>
-                    </label>
-                </div>
-                <div class="col s6 m3">
-                    <label>
-                        <input type="checkbox" id='rainbowBadge' />
-                        <span>Rainbow</span>
-                    </label>
-                </div>
-                <div class="col s6 m3">
-                    <label>
-                        <input type="checkbox" id='soulBadge' />
-                        <span>Soul</span>
-                    </label>
-                </div>
-                <div class="col s6 m3">
-                    <label>
-                        <input type="checkbox" id='marshBadge' />
-                        <span>Marsh</span>
-                    </label>
-                </div>
-                <div class="col s6 m3">
-                    <label>
-                        <input type="checkbox" id='volcanoBadge' />
-                        <span>Volcano</span>
-                    </label>
-                </div>
-                <div class="col s6 m3">
-                    <label>
-                        <input type="checkbox" id='earthBadge' />
-                        <span>Earth</span>
-                    </label>
+                <div class="row">
+                    <div class="col s6 m3">
+                        <label >
+                            <input type="checkbox" id='boulderBadge' disabled />
+                            <span>Boulder</span>
+                        </label>
+                    </div>
+                    <div class="col s6 m3">
+                        <label>
+                            <input type="checkbox" id='cascadeBadge' disabled/>
+                            <span>Cascade</span>
+                        </label>
+                    </div>
+                    <div class="col s6 m3">
+                        <label>
+                            <input type="checkbox" id='thunderBadge' disabled />
+                            <span>Thunder</span>
+                        </label>
+                    </div>
+                    <div class="col s6 m3">
+                        <label>
+                            <input type="checkbox" id='rainbowBadge' disabled />
+                            <span>Rainbow</span>
+                        </label>
+                    </div>
+                    <div class="col s6 m3">
+                        <label>
+                            <input type="checkbox" id='soulBadge' disabled />
+                            <span>Soul</span>
+                        </label>
+                    </div>
+                    <div class="col s6 m3">
+                        <label>
+                            <input type="checkbox" id='marshBadge' disabled />
+                            <span>Marsh</span>
+                        </label>
+                    </div>
+                    <div class="col s6 m3">
+                        <label>
+                            <input type="checkbox" id='volcanoBadge' disabled />
+                            <span>Volcano</span>
+                        </label>
+                    </div>
+                    <div class="col s6 m3">
+                        <label>
+                            <input type="checkbox" id='earthBadge' disabled />
+                            <span>Earth</span>
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -233,24 +256,29 @@
                         <div class="row">
                             <ul class="collection col s6">
                                 <li class="collection-item" id="pkmnAttack">
-                                    Attack
-                                    <span id="pkmnAttackValue" class="secondary-content"/>
+                                    Attack<br>
+                                    <span id="pkmnAttackValue">&nbsp;</span>
+                                    <span id="pkmnAttackHidden" class="secondary-content"></span>
                                 </li>
                                 <li class="collection-item" id="pkmnDefense">
-                                    Defense
-                                    <span id="pkmnDefenseValue" class="secondary-content"/>
+                                    Defense<br>
+                                    <span id="pkmnDefenseValue">&nbsp;</span>
+                                    <span id="pkmnDefenseHidden" class="secondary-content"></span>
                                 </li>
                                 <li class="collection-item" id="pkmnSpeed">
-                                    Speed
-                                    <span id="pkmnSpeedValue" class="secondary-content"/>
+                                    Speed<br>
+                                    <span id="pkmnSpeedValue">&nbsp;</span>
+                                    <span id="pkmnSpeedHidden" class="secondary-content"></span>
                                 </li>
                                 <li class="collection-item" id="pkmnSpecial">
-                                    Special
-                                    <span id="pkmnSpecialValue" class="secondary-content"/>
+                                    Special<br>
+                                    <span id="pkmnSpecialValue">&nbsp;</span>
+                                    <span id="pkmnSpecialHidden" class="secondary-content"></span>
                                 </li>
                                 <li class="collection-item" id="pkmnHpStat">
-                                    HP
-                                    <span id="pkmnHpStatValue" class="secondary-content"/>
+                                    HP<br>
+                                    <span id="pkmnHpStatValue">&nbsp;</span>
+                                    <span id="pkmnHpStatHidden" class="secondary-content"></span>
                                 </li>
                             </ul>
                             <ul class="collection col s6">
@@ -278,242 +306,35 @@
         </div>
     </div>
     <script type="text/javascript" src="pkdata.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="binaryfile.js" charset="UTF-8"></script>
     <script type="text/javascript" src="pkmn.js" charset="UTF-8"></script>
     <script type="text/javascript" src="savefile.js" charset="UTF-8"></script>
     <script type="text/javascript" src="textcodec.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="controller.js" charset="UTF-8"></script>
     <script>
-        M.AutoInit();
 
-        const MIN_FILE_SIZE = 0x3524;
-        let sav = null;
-        const DAYCARE = -1;
-        const PARTY = 0;
-        let selectedBox = 0;
-        let selectedPkmn = -1;
+        const controller = new MainPageController( {
+            trainerName:    document.querySelector("#trainerName"),
+            trainerMoney:   document.querySelector('#trainerMoney'),
+            trainerCoins:   document.querySelector("#trainerCoins"),
+            trainerId:      document.querySelector("#trainerId"),
+            rivalName:      document.querySelector("#rivalName"),
+            playTime:       document.querySelector("#playTime"),
+            pikaFriendship: document.querySelector("#pikachuFriendship"),
 
-        document.querySelector("#pkmn-box-select").addEventListener('change', function (event) {
-            selectedBox = parseInt(event.target.value, 10);
-            if (sav != null) {
-                setPkmnList(selectedBox);
-            }
+            boulderBadge:   document.querySelector("#boulderBadge"),
+            cascadeBadge:   document.querySelector("#cascadeBadge"),
+            thunderBadge:   document.querySelector("#thunderBadge"),
+            rainbowBadge:   document.querySelector("#rainbowBadge"),
+            soulBadge:      document.querySelector("#soulBadge"),
+            marshBadge:     document.querySelector("#marshBadge"),
+            volcanoBadge:   document.querySelector("#volcanoBadge"),
+            earthBadge:     document.querySelector("#earthBadge"),
         });
 
-        function setPkmnList(selected) {
-            switch(selectedBox){
-                case DAYCARE: 
-                    if (sav.daycare.inUse) {
-                        setEntries("#pkmnBox", [sav.daycare.pkmn], createPkmnEntry); 
-                    } else {
-                        setEntries("#pkmnBox", [], null); 
-                    }
-                    return;
-                case PARTY: 
-                    setEntries("#pkmnBox", sav.party, createPkmnEntry); 
-                    return;
-                default: 
-                    setEntries("#pkmnBox", sav.boxes[selectedBox - 1], createPkmnEntry); 
-                    return;
-            }
-            
-        }
-        
-        document.querySelector('#inputFile').addEventListener('change', function() {
-            const reader = new FileReader();
-            reader.onload = function() {
-                const arrayBuffer = this.result;
-                const array = new Uint8Array(arrayBuffer);
-
-                const codec = AMERICA_TEXT_CODEC;
-                sav = new SaveFile(array, codec);
-
-
-                if(array.length <= MIN_FILE_SIZE) {
-                    console.log("not a valid file, size is less than " + MIN_FILE_SIZE);
-                }
-
-                document.querySelector('#trainerName').value = sav.trainerName;
-                document.querySelector('#trainerMoney').value = '$' + sav.trainerMoney;
-                document.querySelector('#trainerCoins').value = sav.trainerCoins;
-                document.querySelector('#trainerId').value = sav.trainerId;
-                document.querySelector("#rivalName").value = sav.rivalName;
-
-                document.querySelector("#boulderBadge").checked = sav.badges.boulder;
-                document.querySelector("#cascadeBadge").checked = sav.badges.cascade;
-                document.querySelector("#thunderBadge").checked = sav.badges.thunder;
-                document.querySelector("#rainbowBadge").checked = sav.badges.rainbow;
-                document.querySelector("#soulBadge").checked    = sav.badges.soul;
-                document.querySelector("#marshBadge").checked   = sav.badges.marsh;
-                document.querySelector("#volcanoBadge").checked = sav.badges.volcano;
-                document.querySelector("#earthBadge").checked   = sav.badges.earth;
-
-                document.querySelector("#playTime").value  = sav.playTime;
-                document.querySelector("#pikachuFriendship").value = sav.pikaFriendship;
-
-                setEntries("#itemBag", sav.itemBag, createItemEntry); 
-                setEntries("#itemBox", sav.itemBox, createItemEntry);
-                setEntries("#pokedexEntries", sav.pokedex, createDexEntry);
-                setEntries("#hallOfFame", sav.hallOfFame, createHallEntry);
-                setPkmnList();
-
-                M.updateTextFields();
-            }
-            reader.readAsArrayBuffer(this.files[0]);
-        }, false);
-
-        function onPkmnClick(event) {
-            const identifier = event.target.id;
-            document.querySelector("#" + identifier).classList.add('selected');
-            const parts = identifier.split('-');
-            const index = parts[1];
-            selectedPkmn = index - 1;
-            if (selectedBox == 0) {
-                displayPkmn(sav.party[selectedPkmn]);
-            } else {
-                displayPkmn(sav.boxes[selectedBox -1][selectedPkmn]);
-            }
-        }
-
-        function setEntries(selector, list, entryCreator) {
-            // cleaning the list:
-            document.querySelector(selector).textContent = '';
-            for (const element of list) {
-                const entry = entryCreator (element);
-                document.querySelector(selector).appendChild(entry);
-            }
-        }
-
-        function displayPkmn (pkmn) {
-            document.querySelector("#pkmnNickname").value = pkmn.nickname;
-            document.querySelector("#pkmnSpecies").value = pkmn.species.name;
-            document.querySelector("#pkmnLevel").value = pkmn.level;
-            document.querySelector("#pkmnExperience").value = pkmn.experience;
-            document.querySelector("#pkmnExpToNextLevel").value = pkmn.expToNextLevel;
-            document.querySelector("#pkmnCurHp").value = pkmn.currentHp + "/" + pkmn.maxHp;
-            document.querySelector("#pkmnStatus").value = pkmn.status;
-            document.querySelector("#pkmnHeldItem").value =  pkmn.heldItem;
-            document.querySelector("#pkmnType").value = 
-                (pkmn.type1 == pkmn.type2) ? pkmn.type1 : pkmn.type1 + '/' + pkmn.type2;
-
-            document.querySelector("#pkmnOtIdNumber").value = pkmn.otIdNumber;
-            document.querySelector("#pkmnOtName").value = pkmn.otName;
-            setStatStr("#pkmnAttackValue", pkmn.attack, pkmn.attackEv, pkmn.attackIv);
-            setStatStr("#pkmnDefenseValue", pkmn.defense, pkmn.defenseEv, pkmn.defenseIv);
-            setStatStr("#pkmnSpeedValue", pkmn.speed, pkmn.attackEv, pkmn.attackIv);
-            setStatStr("#pkmnSpecialValue", pkmn.special, pkmn.specialEv, pkmn.specialIv);
-            setStatStr("#pkmnHpStatValue", pkmn.maxHp, pkmn.hpEv, pkmn.hpIv);
-            for (let i = 0; i < 4; ++i) {
-                const move = pkmn.moves[i];
-                if (move != null) {
-                    const prefix = "#move-" + (i+1);
-                    let suffix = null;
-                    switch (move.appliedPpUps) {
-                        case 3: suffix = '‴'; break;
-                        case 2: suffix = '″'; break;
-                        case 1: suffix = '′'; break;
-                        case 0: suffix = ''; break;
-                        default: suffix = '*'; break;
-                    }
-                    setText(prefix + "-name", "#" + move.index + " " + move.name);
-                    setText(prefix + "-pp", move.currentPp + "/" + move.maxPp + suffix);
-                }
-            }
-            M.updateTextFields();
-        }
-
-        function setStatStr(selector, value, ev, iv) {
-            return setText(selector, value + "-EV:" + ev + "-IV:" + iv);
-        }
-
-        function createHallEntry(entry) {
-            const ul = document.createElement('ul');
-            ul.classList.add('collection');
-            for (const pkmn of entry.team) {
-                const span = document.createElement('span');
-                span.classList.add('secondary-content');
-                span.textContent = pkmn.level;
-
-                const noNick = pkmn.speciesName.toUpperCase() == pkmn.nickname.toUpperCase();
-                const displayName = (noNick) ? 
-                    pkmn.speciesName : pkmn.speciesName + " - " + pkmn.nickname;
-
-                const innerIl = document.createElement('li');
-                innerIl.textContent = "#" + pkmn.speciesNumber + " " + displayName;
-                innerIl.appendChild(span);
-                ul.appendChild(innerIl);
-            }
-
-            const li = document.createElement('li');
-            li.appendChild(document.createTextNode('ENTRY #' + entry.index));
-            li.appendChild(ul);
-            return li;
-        }
-
-        function pad(src, size, paddingChar) {
-            let str = src.toString();
-            while (num.length < size) { 
-                str = paddingChar + str;
-            }
-            return str;
-        }
-
-        function setText (selector, value) {
-            document
-                .querySelector(selector)
-                .textContent = value;
-        }
-
-        function createPkmnEntry(pkmn) {
-            const hpBar = document.createElement('input')
-            hpBar.style.setProperty('width','auto');
-            hpBar.type = 'range'
-            hpBar.min = 0;
-            hpBar.max = pkmn.maxHp;
-            hpBar.value = pkmn.currentHp;
-            const li = document.createElement('li');
-            li.classList.add("collection-item");
-            li.classList.add("clickable");
-            li.appendChild(document.createTextNode(
-                "#" + pkmn.number + " " + pkmn.species.name + " L" + pkmn.level));
-            // <input type="range" name="price" id="price" min="50000" max="500000" step="100" value="250000">
-            li.appendChild(document.createElement("br"));
-            li.appendChild(document.createTextNode('HP: '));
-            li.appendChild(hpBar);
-            li.onclick = onPkmnClick;
-            li.id = 'pkmn-' + pkmn.position;
-            li.appendChild(document.createTextNode(pkmn.currentHp + '/' + pkmn.maxHp));
-            return li;
-        }
-
-        function createDexEntry (pkmn) {
-            let li = document.createElement('li');
-            li.classList.add("collection-item");
-            if (!pkmn.owned && pkmn.seen) {
-                li.style.setProperty('background-color','#e4e4e4')
-            } else {
-                let span = document.createElement('span');
-                span.classList.add('secondary-content');
-                span.appendChild(document.createTextNode( pkmn.owned ? 'owned' : 'seen' ));
-                li.appendChild(span);
-            }
-            li.appendChild(document.createTextNode("#" + pkmn.index + ' ' + pkmn.name));
-            return li;
-        }
-
-        function createItemEntry(item) {
-
-            let span = document.createElement('span');
-            span.classList.add('secondary-content');
-            span.appendChild(document.createTextNode("x" + item.count))
-
-            let div = document.createElement('div')
-            div.appendChild(document.createTextNode(item.name));
-            div.appendChild(span);
-
-            let li = document.createElement('li');
-            li.classList.add("collection-item");
-            li.appendChild(div); 
-            return li;
-        }
-
-</script>
+        document.querySelector("#pkmn-box-select").addEventListener('change', e => controller.onBoxSelected(e));
+        document.querySelector('#inputFile').addEventListener('change', e => controller.onFileChanged(e), false);
+        document.querySelector('#download').addEventListener('click', e => controller.onDownload(e));
+        M.AutoInit();
+    </script>
 </body>

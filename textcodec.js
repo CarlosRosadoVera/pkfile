@@ -3,15 +3,47 @@
 const TERMINATING_CHAR = 0x50;
 class TextCodec {
 
-    constructor (encodingTable) {
-        this.encodingTable = encodingTable;
+    constructor (decodingTable) {
+        this.decodingTable = decodingTable;
+        this.terminatingChar = TERMINATING_CHAR;
     }
+
+    get encodingTable() {
+        if (this.$$$encodingTable === undefined) {
+            this.$$$encodingTable = new Map();
+            for (let x = 0; x < this.decodingTable.length; ++x) {
+                for (let y = 0; y < this.decodingTable[x].length; ++y) {
+                    const value = (x * 0x10) + y;
+                    this.$$$encodingTable.set(this.decodingTable[x][y], value);
+                }
+            }
+        }
+        return this.$$$encodingTable;
+    }
+
     isTerminating(value) {
         return value == TERMINATING_CHAR;
     }
+
     decode(value){
-        const result = this.encodingTable[value >> 4][ value & 0x0F];
+        const result = this.decodingTable[value >> 4][ value & 0x0F];
         return result  || '�';
+    }
+
+    encode (text, max) {
+        const result = [];
+        for (const c of text) {
+            if (result.length === max){
+                return result;
+            } else {
+                if (this.encodingTable.has(c)) {
+                    result.push(this.encodingTable.get(c));
+                } else {
+                    result.push(0x80); //'A'
+                }
+            }
+        }
+        return result;
     }
 }
 
@@ -33,7 +65,6 @@ const ENGLISH_ENCODING = [
     ['\'','ᴾₖ','ᴹₙ','-','\'r','\'m','?','!','.','ァ','ゥ','ェ','▷','▶','▼','♂',], // E-
     ['¥','×','.','/',',','♀','0','1','2','3','4','5','6','7','8','9',]  // F-
 ];
-
 
 
 
