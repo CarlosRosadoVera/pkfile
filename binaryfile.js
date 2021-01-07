@@ -88,5 +88,6 @@ class BinaryFile {
             sum = (this.array[i] + sum) & 0xFF;
         }
         sum = (~sum) & 0xFF;
+        return sum;
     }
 }
