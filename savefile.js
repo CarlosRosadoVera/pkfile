@@ -65,7 +65,7 @@ class SaveFile {
         return this.file.getDelimitedString(RIVAL_NAME_START_POS);
     }
 
-    set rivalName() {
+    set rivalName(newValue) {
         this.file.setString(RIVAL_NAME_START_POS, newValue, 11);
     }
 
@@ -92,7 +92,7 @@ class SaveFile {
     }
 
     get checksum () {
-        return this.file.array[0x3523];
+        return this.file.getUint8(0x3523);
     }
 
     set checksum (value) {
