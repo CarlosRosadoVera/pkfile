@@ -16,23 +16,26 @@ class BinaryFile {
         return result;
     }
 
-    getDelimitedString (startPos) {
-        const endPos = this.findStringLength(startPos);
+    getDelimitedString (startPos, maxLength) {
+        const endPos = this.findStringLength(startPos, maxLength);
         return this.getString(startPos, endPos);
     }
 
     setString (startPos, newValue, max) {
-        const result = this.codec.encode(newValue, max);
+        const result = this.codec.encode(newValue, max - 1); // one space for term.
         for (let i = 0; i < result.length; i++) {
             this.array[startPos + i] = result[i];
         }
         this.array[startPos + result.length] = codec.terminatingChar;
     }
 
-    findStringLength (startPos)  {
+    findStringLength (startPos, max)  {
         let offset = 0;
         while (offset + startPos < this.array.length) {
             if (this.codec.isTerminating(this.array[offset + startPos ])) {
+                if (max !== undefined && offset > max) {
+                    return max + startPos;
+                }
                 return offset + startPos;
             }
             ++offset;
@@ -47,6 +50,14 @@ class BinaryFile {
             result += (this.codec.decode(byte));
         }
         return result;
+    }
+
+    getHiNibOf(pos) {
+        return this.array[pos] >> 4;
+    }
+
+    getLoNibOf(pos) {
+        return this.array[pos] & 0x0F;
     }
 
     getHiNib(byte) {

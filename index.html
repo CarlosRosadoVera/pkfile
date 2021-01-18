@@ -28,32 +28,87 @@
         .barElement {
             float: right;
         }
-        .halfMargin {
-            margin-top: 0.5rem;
-            margin-bottom: 0.5rem;
+        .cart-container {
+            display: flex;
+            flex-wrap: wrap;
         }
+        .cart-file {
+            margin: 0.2rem;
+            background-repeat: no-repeat;
+            background-position: top center;
+            background-size: 5rem 5rem;
+            text-align: center;
+            width: 7rem;
+            height: 7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .cart-file:hover .cart-svg{
+            opacity: 80%;
+        }
+        .cart-svg {
+            position: absolute;
+            width: 7rem;
+            opacity: 60%;
+        }
+        .cart-svg#a2zN9ZNir1{
+            fill: yellow;
+        }
+        .cart-text {
+            z-index: 100;
+            width: 6rem;
+        }
+
+        .selected-pkmn {
+            background-color: #e0f7fa !important;
+            box-shadow: inset 0 0 1px 1px #327c9e;
+        }
+
+        .normal-type   {background: #A8A878; border: 1px solid #6D6D4E; color: #FFF;}
+        .fighting-type {background: #C03028; border: 1px solid #7D1F1A; color: #FFF;}
+        .flying-type   {background: #A890F0; border: 1px solid #6D5E9C; color: #FFF;}
+        .poison-type   {background: #A040A0; border: 1px solid #682A68; color: #FFF;}
+        .ground-type   {background: #E0C068; border: 1px solid #927D44; color: #FFF;}
+        .rock-type     {background: #B8A038; border: 1px solid #786824; color: #FFF;}
+        .bug-type      {background: #A8B820; border: 1px solid #6D7815; color: #FFF;}
+        .ghost-type    {background: #705898; border: 1px solid #493963; color: #FFF;}
+        .fire-type     {background: #F08030; border: 1px solid #9C531F; color: #FFF;}
+        .water-type    {background: #6890F0; border: 1px solid #445E9C; color: #FFF;}
+        .grass-type    {background: #78C850; border: 1px solid #4E8234; color: #FFF;}
+        .electric-type {background: #F8D030; border: 1px solid #A1871F; color: #FFF;}
+        .psychic-type  {background: #F85888; border: 1px solid #A13959; color: #FFF;}
+        .ice-type      {background: #98D8D8; border: 1px solid #638D8D; color: #FFF;}
+        .dragon-type   {background: #7038F8; border: 1px solid #4924A1; color: #FFF;}
+        .steel-type    {background: #B8B8D0; border: 1px solid #787887; color: #FFF;}
+        .dark-type     {background: #705848; border: 1px solid #49392F; color: #FFF;}
+        .fairy-type    {background: #EE99AC; border: 1px solid #9B6470; color: #FFF;}
+        .qqqq-type     {background: #68A090; border: 1px solid #44685E; color: #FFF;}
 
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="row">
-            <div class="halfMargin file-field input-field col s6">
-                <div class="waves-effect waves-light btn">
-                    <span>File</span>
-                    <input type="file" id="inputFile" >
+        <ul class="collapsible popout">
+            <li class="active">
+                <div class="collapsible-header"><i class="material-icons">filter_drama</i>File
+                    <span id="file-label"></span></div>
+                <div class="collapsible-body">
+                    <div>
+                        <a class="waves-effect waves-light btn barElement" id="download">
+                            <i class="material-icons left">file_download</i>
+                            DOWNLOAD
+                        </a>
+                        <div class="cart-container" id="file-list"> </div>
+                        <label for="inputFile" class="btn">
+                            Add File
+                            <input type="file" id="inputFile" style="display:none">
+                        </label>
+                    </div>
                 </div>
-                <div class="file-path-wrapper">
-                    <input class="file-path validate" type="text">
-                </div>
-            </div>
-            <div class="halfMargin col s6">
-                <a class="waves-effect waves-light btn barElement" id="download">
-                    <i class="material-icons left">file_download</i>
-                    download
-                </a>
-            </div>
-        </div>
+            </li>
+        </ul>
         <div id="mainNav" class="row">
             <div class="col s12">
                 <ul class="tabs">
@@ -99,56 +154,7 @@
                         <label for="pikachuFriendship">Pikachu Friendship</label>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col s6 m3">
-                        <label >
-                            <input type="checkbox" id='boulderBadge' disabled />
-                            <span>Boulder</span>
-                        </label>
-                    </div>
-                    <div class="col s6 m3">
-                        <label>
-                            <input type="checkbox" id='cascadeBadge' disabled/>
-                            <span>Cascade</span>
-                        </label>
-                    </div>
-                    <div class="col s6 m3">
-                        <label>
-                            <input type="checkbox" id='thunderBadge' disabled />
-                            <span>Thunder</span>
-                        </label>
-                    </div>
-                    <div class="col s6 m3">
-                        <label>
-                            <input type="checkbox" id='rainbowBadge' disabled />
-                            <span>Rainbow</span>
-                        </label>
-                    </div>
-                    <div class="col s6 m3">
-                        <label>
-                            <input type="checkbox" id='soulBadge' disabled />
-                            <span>Soul</span>
-                        </label>
-                    </div>
-                    <div class="col s6 m3">
-                        <label>
-                            <input type="checkbox" id='marshBadge' disabled />
-                            <span>Marsh</span>
-                        </label>
-                    </div>
-                    <div class="col s6 m3">
-                        <label>
-                            <input type="checkbox" id='volcanoBadge' disabled />
-                            <span>Volcano</span>
-                        </label>
-                    </div>
-                    <div class="col s6 m3">
-                        <label>
-                            <input type="checkbox" id='earthBadge' disabled />
-                            <span>Earth</span>
-                        </label>
-                    </div>
-                </div>
+                <div class="row" id="badges"> </div>
             </div>
         </div>
         <div id="items" class="row">
@@ -275,6 +281,16 @@
                                     <span id="pkmnSpecialValue">&nbsp;</span>
                                     <span id="pkmnSpecialHidden" class="secondary-content"></span>
                                 </li>
+                                <li class="collection-item" id="pkmnSpecialAtk" style="display: none;">
+                                    Special Attack<br>
+                                    <span id="pkmnSpecialAtkValue">&nbsp;</span>
+                                    <span id="pkmnSpecialAtkHidden" class="secondary-content"></span>
+                                </li>
+                                <li class="collection-item" id="pkmnSpecialDef" style="display: none;">
+                                    Special Defense<br>
+                                    <span id="pkmnSpecialDefValue">&nbsp;</span>
+                                    <span id="pkmnSpecialDefHidden" class="secondary-content"></span>
+                                </li>
                                 <li class="collection-item" id="pkmnHpStat">
                                     HP<br>
                                     <span id="pkmnHpStatValue">&nbsp;</span>
@@ -282,21 +298,25 @@
                                 </li>
                             </ul>
                             <ul class="collection col s6">
-                                <li class="collection-item">
+                                <li id="move-1" class="collection-item">
                                     <span id="move-1-name">--</span>
                                     <span id="move-1-pp" class="secondary-content">-</span>
+                                    <br>
                                 </li>
-                                <li class="collection-item">
+                                <li id="move-2" class="collection-item">
                                     <span id="move-2-name">--</span>
                                     <span id="move-2-pp" class="secondary-content">-</span>
+                                    <br>
                                 </li>
-                                <li class="collection-item">
+                                <li id="move-3" class="collection-item">
                                     <span id="move-3-name">--</span>
                                     <span id="move-3-pp" class="secondary-content">-</span>
+                                    <br>
                                 </li>
-                                <li class="collection-item">
+                                <li id="move-4" class="collection-item">
                                     <span id="move-4-name">--</span>
                                     <span id="move-4-pp" class="secondary-content">-</span>
+                                    <br>
                                 </li>
                             </ul>
                         </div>
@@ -305,36 +325,35 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript" src="storage.js" charset="UTF-8"></script>
     <script type="text/javascript" src="pkdata.js" charset="UTF-8"></script>
     <script type="text/javascript" src="binaryfile.js" charset="UTF-8"></script>
     <script type="text/javascript" src="pkmn.js" charset="UTF-8"></script>
-    <script type="text/javascript" src="savefile.js" charset="UTF-8"></script>
     <script type="text/javascript" src="textcodec.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="savefile.js" charset="UTF-8"></script>
     <script type="text/javascript" src="controller.js" charset="UTF-8"></script>
     <script>
 
-        const controller = new MainPageController( {
-            trainerName:    document.querySelector("#trainerName"),
-            trainerMoney:   document.querySelector('#trainerMoney'),
-            trainerCoins:   document.querySelector("#trainerCoins"),
-            trainerId:      document.querySelector("#trainerId"),
-            rivalName:      document.querySelector("#rivalName"),
-            playTime:       document.querySelector("#playTime"),
-            pikaFriendship: document.querySelector("#pikachuFriendship"),
 
-            boulderBadge:   document.querySelector("#boulderBadge"),
-            cascadeBadge:   document.querySelector("#cascadeBadge"),
-            thunderBadge:   document.querySelector("#thunderBadge"),
-            rainbowBadge:   document.querySelector("#rainbowBadge"),
-            soulBadge:      document.querySelector("#soulBadge"),
-            marshBadge:     document.querySelector("#marshBadge"),
-            volcanoBadge:   document.querySelector("#volcanoBadge"),
-            earthBadge:     document.querySelector("#earthBadge"),
+        const controller = new MainPageController( {
+            fileList:       document.querySelector('#file-list'),
+            trainerName:    document.querySelector('#trainerName'),
+            trainerMoney:   document.querySelector('#trainerMoney'),
+            trainerCoins:   document.querySelector('#trainerCoins'),
+            trainerId:      document.querySelector('#trainerId'),
+            rivalName:      document.querySelector('#rivalName'),
+            playTime:       document.querySelector('#playTime'),
+            pikaFriendship: document.querySelector('#pikachuFriendship'),
+            badges:         document.querySelector('#badges'),
+            fileLabel:      document.querySelector('#file-label'),
+            callback: () => M.updateTextFields()
         });
 
-        document.querySelector("#pkmn-box-select").addEventListener('change', e => controller.onBoxSelected(e));
-        document.querySelector('#inputFile').addEventListener('change', e => controller.onFileChanged(e), false);
+        document.querySelector('#pkmn-box-select').addEventListener('change', e => controller.onBoxSelected(e));
         document.querySelector('#download').addEventListener('click', e => controller.onDownload(e));
-        M.AutoInit();
+        document.addEventListener("DOMContentLoaded", e => controller.loadAllFiles(e));
+        document.querySelector('#inputFile').addEventListener('change', e => controller.onFileChanged(e) , false);
+        M.AutoInit(document.body);
     </script>
 </body>
+</html>

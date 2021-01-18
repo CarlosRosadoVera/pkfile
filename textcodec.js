@@ -22,7 +22,7 @@ class TextCodec {
     }
 
     isTerminating(value) {
-        return value == TERMINATING_CHAR;
+        return value === TERMINATING_CHAR;
     }
 
     decode(value){
@@ -33,7 +33,7 @@ class TextCodec {
     encode (text, max) {
         const result = [];
         for (const c of text) {
-            if (result.length === max){
+            if (result.length === max) {
                 return result;
             } else {
                 if (this.encodingTable.has(c)) {
@@ -66,6 +66,24 @@ const ENGLISH_ENCODING = [
     ['¥','×','.','/',',','♀','0','1','2','3','4','5','6','7','8','9',]  // F-
 ];
 
+const ENGLISH_ENCODING_GEN_II    = [
+    [], // 0-
+    [], // 1-
+    [], // 2-
+    [], // 3-
+    [], // 4-
+    [], // 5-
+    ['A','B','C','D','E','F','G','H','I','J','K','L','M',':','ぃ','ぅ'], // 6-
+    ['‘','’','“','”','・','⋯','ぁ','ぇ','ぉ','□','□','□','□','□','□',' '], // 7-
+    ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P'], // 8-
+    ['Q','R','S','T','U','V','W','X','Y','Z','(',')',':',';','[',']'], // 9-
+    ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p'], // A-
+    ['q','r','s','t','u','v','w','x','y','z','□','□','□','□','□','□'], // B-
+    ['Ä','Ö','Ü','ä','ö','ü','□','□','□','□','□','□','□','□','□','□'], // C-
+    ['\'d','\'l','\'m','\'r','s','\'t','\'v','□','□','□','□','□','□','□','□','←'], // D-
+    ['\'','ᴾₖ','ᴹₙ','-','□','□','?','!','.','&','é','→','▷','▶','▼','♂',], // E-
+    ['¥','×','.','/',',','♀','0','1','2','3','4','5','6','7','8','9',]  // F-
+];
 
 
 const JAPANESE_ENCODING = [
@@ -127,6 +145,7 @@ const ITALIAN_SPANISH_ENCODING = [
 ]
 
 const AMERICA_TEXT_CODEC = new TextCodec(ENGLISH_ENCODING);
+const AMERICA_TEXT_CODEC_GEN_II = new TextCodec(ENGLISH_ENCODING_GEN_II);
 const JAPAN_TEXT_CODEC = new TextCodec(JAPANESE_ENCODING);
 const ITALIAN_SPANISH_CODEC = new TextCodec(ITALIAN_SPANISH_ENCODING);
 const FRENCH_GERMAN_CODEC = new TextCodec(FRENCH_GERMAN_ENCODING);

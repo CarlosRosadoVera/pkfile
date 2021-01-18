@@ -1,8 +1,72 @@
 
 
+class PkmnBase {
 
-class Pkmn {
+    constructor(genFormat) {
+        this.genFormat = genFormat;
+    }
+
+    get expToNextLevel() {
+        return this.species.ex.forNextLevel(this.level + 1, this.experience);
+    }
+
+    getStatusName(value) {
+        switch (value) {
+            case 0x04: return 'SLP';
+            case 0x08: return 'PSN';
+            case 0x10: return 'BRN';
+            case 0x20: return 'FRZ';
+            case 0x40: return 'PAR';
+            default: return '--'
+        }
+    }
+
+    calcStat(iv, ev, base, level) {
+        return Math.floor(
+            ((((base +  iv) * 2 + Math.sqrt(ev)/4) * level) /100 ) + 5);
+    }
+
+    calcHpIv(adIv, ssIv) {
+        return ((adIv & 0x10) >> 1) + // 0001 0000 >>   1000
+            ((adIv & 0x1 ) << 2) + // 0000 0001 >> 0100
+            ((ssIv & 0x10) >> 3) +// 0001 0000 >>   0010
+            ((ssIv & 0x1 ));       // 0000 0001 >> 0001
+    }
+
+    calcMaxPp(naturalPp, appliedPpUps) {
+        if (naturalPp >= 35) {
+            return naturalPp + (appliedPpUps * 7);
+        } else {
+            return naturalPp + ((naturalPp / 5) * appliedPpUps);
+        }
+    }
+
+    getMove(pkmnBase, index, ppVal) {
+        if (index === 0) {
+            return null;
+        }
+        const move = INDEX_TO_MOVE[index].forGeneration(this.genFormat);
+        const appliedPpUps = (ppVal & 0xC0) >> 0x6;
+        return {
+            index: index,
+            name: move.name,
+            type: move.type,
+            naturalPp: move.pp,
+            appliedPpUps: appliedPpUps,// 1100 0000
+            maxPp: this.calcMaxPp(move.pp, appliedPpUps),
+            currentPp: ppVal & 0x3F //0011 1111
+        };
+    }
+
+    calcHpStat(iv, ev, base, level) {
+        return Math.floor(
+            ((((base +  iv) * 2 + Math.sqrt(ev)/4) * level) /100 ) + level + 10);
+    }
+}
+
+class PkmnGenI extends PkmnBase {
     constructor (binFile, pkmnBase, index, inParty, otName, nickname, boxIndex) {
+        super('I');
         this.$binFile = binFile; // to use in getters
         this.$pkmnBase = pkmnBase; // to use in getters
         const speciesIndex = binFile.array[pkmnBase];
@@ -19,11 +83,12 @@ class Pkmn {
         this.type1    = this.getTypeName(binFile.array[pkmnBase + 0x5]);
         this.type2    = this.getTypeName(binFile.array[pkmnBase + 0x6]);
         this.heldItem = this.getHeldItem(binFile.array[pkmnBase + 0x7]);
+
         this.moves = [
-            this.getMove(pkmnBase, 0x08, 0x1D),
-            this.getMove(pkmnBase, 0x09, 0x1E),
-            this.getMove(pkmnBase, 0x0A, 0x1F),
-            this.getMove(pkmnBase, 0x0B, 0x20)
+            this.getMove(pkmnBase, this.$binFile.getUint8(pkmnBase + 0x08), this.$binFile.getUint8(pkmnBase + 0x1D)),
+            this.getMove(pkmnBase, this.$binFile.getUint8(pkmnBase + 0x09), this.$binFile.getUint8(pkmnBase + 0x1E)),
+            this.getMove(pkmnBase, this.$binFile.getUint8(pkmnBase + 0x0A), this.$binFile.getUint8(pkmnBase + 0x1F)),
+            this.getMove(pkmnBase, this.$binFile.getUint8(pkmnBase + 0x0B), this.$binFile.getUint8(pkmnBase + 0x20)),
         ];
         this.otIdNumber = binFile.getUint16(pkmnBase + 0x0C);
         this.otName     = otName;
@@ -33,7 +98,8 @@ class Pkmn {
         this.defenseEv  = binFile.getUint16(pkmnBase + 0x15);
         this.speedEv    = binFile.getUint16(pkmnBase + 0x17);
         this.specialEv  = binFile.getUint16(pkmnBase + 0x19);
-        this.hpIv       = this.calcHpIv(pkmnBase + 0x1B, pkmnBase + 0x1C);
+
+        this.hpIv       = this.calcHpIv(this.$binFile.array[pkmnBase + 0x1B], this.$binFile.array[pkmnBase + 0x1C]);
         this.attackIv   = binFile.getHiNib(binFile.array[pkmnBase + 0x1B]);
         this.defenseIv  = binFile.getLoNib(binFile.array[pkmnBase + 0x1B]);
         this.speedIv    = binFile.getHiNib(binFile.array[pkmnBase + 0x1C]);
@@ -41,8 +107,8 @@ class Pkmn {
     }
 
     get level() {
-        return this.inParty ? 
-            this.$binFile.array[this.$pkmnBase + 0x21] : 
+        return this.inParty ?
+            this.$binFile.array[this.$pkmnBase + 0x21] :
             this.species.ex.levelAt(this.experience);
     }
 
@@ -80,33 +146,6 @@ class Pkmn {
                 this.specialIv, this.specialEv, this.species.spc, this.level);
     }
 
-    get specialAtk() {
-        return this.calcStat(
-            this.specialIv, this.specialEv, this.species.satk, this.level);
-    }
-
-    get specialDef() {
-        return this.calcStat(
-            this.specialIv, this.specialEv, this.species.sdef, this.level);
-    }
-
-    get expToNextLevel() {
-        return this.species.ex.forNextLevel(
-            this.level + 1,
-            this.experience);
-    }
-
-    getStatusName(value) {
-        switch (value) {
-            case 0x04: return 'SLP';
-            case 0x08: return 'PSN';
-            case 0x10: return 'BRN';
-            case 0x20: return 'FRZ';
-            case 0x40: return 'PAR';
-            default: return '--'
-        }
-    }
-
     getHeldItem(value) {
         switch(value) {
             case 0x19: return GEN_II_ITEM_NAME_MAP[0x92]; // leftovers
@@ -122,69 +161,118 @@ class Pkmn {
         }
     }
 
-    calcHpIv(adIvPos, ssIvPos) {
-        const adIv = this.$binFile.array[adIvPos];
-        const ssIv = this.$binFile.array[ssIvPos];
-        return ((adIv & 0x10) >> 1) + // 0001 0000 >>   1000
-               ((adIv & 0x1 ) << 2) + // 0000 0001 >> 0100
-               ((ssIv & 0x10) >> 3) +// 0001 0000 >>   0010
-               ((ssIv & 0x1 ));       // 0000 0001 >> 0001
-    }
-
-    calcHpStat(iv, ev, base, level) {
-        return Math.floor(
-            ((((base +  iv) * 2 + Math.sqrt(ev)/4) * level) /100 ) + level + 10);
-    }
-
-    calcStat(iv, ev, base, level) {
-        return Math.floor(
-            ((((base +  iv) * 2 + Math.sqrt(ev)/4) * level) /100 ) + 5);
-    }
-
-    calcMaxPp(naturalPp, appliedPpUps) {
-        if (naturalPp >= 35) {
-            return naturalPp + (appliedPpUps * 7);
-        } else {
-            return naturalPp + ((naturalPp / 5) * appliedPpUps);
-        }
-    }
-
     getTypeName(value) {
         switch(value) {
-            case 0x00: return 'Normal';
-            case 0x01: return 'Fighting';
-            case 0x02: return 'Flying';
-            case 0x03: return 'Poison';
-            case 0x04: return 'Ground';
-            case 0x05: return 'Rock';
-            case 0x07: return 'Bug';
-            case 0x08: return 'Ghost';
-            case 0x14: return 'Fire';
-            case 0x15: return 'Water';
-            case 0x16: return 'Grass';
-            case 0x17: return 'Electric';
-            case 0x18: return 'Psychic';
-            case 0x19: return 'Ice';
-            case 0x1A: return 'Dragon';
-            default: return 'ERROR (' + value +')';
+            case 0x00: return PKTP_NORM;
+            case 0x01: return PKTP_FIGT;
+            case 0x02: return PKTP_FLY;
+            case 0x03: return PKTP_POSN;
+            case 0x04: return PKTP_GRND;
+            case 0x05: return PKTP_ROCK;
+            case 0x07: return PKTP_BUG;
+            case 0x08: return PKTP_GHST;
+            case 0x14: return PKTP_FIRE;
+            case 0x15: return PKTP_WATR;
+            case 0x16: return PKTP_GRAS;
+            case 0x17: return PKTP_ELEC;
+            case 0x18: return PKTP_PSYC;
+            case 0x19: return PKTP_ICE;
+            case 0x1A: return PKTP_DRAG;
+            default: return PKTP_QQQQ;
         }
     }
+}
 
-    getMove(pkmnBase, indexPos, ppPos) {
-        const index = this.$binFile.array[pkmnBase + indexPos];
-        const move = INDEX_TO_MOVE[index];
-        if (index == 0) {
-            return null;
-        }
-        const ppVal = this.$binFile.array[pkmnBase + ppPos];
-        const appliedPpUps = (ppVal & 0xC0) >> 0x6;
-        return {
-            index: index,
-            name: move.name,
-            naturalPp: move.pp,
-            appliedPpUps: appliedPpUps,// 1100 0000
-            maxPp: this.calcMaxPp(move.pp, appliedPpUps),
-            currentPp: ppVal & 0x3F //0011 1111
+class PkmnGenII extends PkmnBase {
+    constructor (binFile, pkmnBase, index, inParty, otName, nickname, boxIndex) {
+        super('II');
+        this.$binFile = binFile; // to use in getters
+        this.$pkmnBase = pkmnBase; // to use in getters
+
+        this.inParty   = inParty;
+        this.boxIndex  = inParty ? -1 : boxIndex;
+        this.position  = index + 1;
+        this.nickname  = nickname;
+        this.number    = binFile.array[pkmnBase];
+        this.species   = PKMN_BY_NAT_NUMBER[this.number - 1];
+
+        this.status   = this.getStatusName(binFile.array[pkmnBase+0x20]);
+        this.type1    = this.species.typeI;
+        this.type2    = this.species.typeII !== undefined ? this.species.typeII : this.species.typeI;
+        this.heldItem = GEN_II_ITEM_NAME_MAP[pkmnBase + 0x07];
+        this.moves = [
+            this.getMove(pkmnBase, this.$binFile.getUint8(pkmnBase + 0x02), this.$binFile.getUint8(pkmnBase + 0x17)),
+            this.getMove(pkmnBase, this.$binFile.getUint8(pkmnBase + 0x03), this.$binFile.getUint8(pkmnBase + 0x18)),
+            this.getMove(pkmnBase, this.$binFile.getUint8(pkmnBase + 0x04), this.$binFile.getUint8(pkmnBase + 0x19)),
+            this.getMove(pkmnBase, this.$binFile.getUint8(pkmnBase + 0x05), this.$binFile.getUint8(pkmnBase + 0x1A)),
+        ];
+        this.otIdNumber = binFile.getUint16(pkmnBase + 0x06);
+        this.otName     = otName;
+        this.experience = binFile.getUint24(pkmnBase + 0x08);
+        this.hpEv       = binFile.getUint16(pkmnBase + 0x0B);
+        this.attackEv   = binFile.getUint16(pkmnBase + 0x0D);
+        this.defenseEv  = binFile.getUint16(pkmnBase + 0x0F);
+        this.speedEv    = binFile.getUint16(pkmnBase + 0x11);
+        this.specialEv  = binFile.getUint16(pkmnBase + 0x13);
+        this.hpIv       = this.calcHpIv(this.$binFile.array[pkmnBase + 0x15], this.$binFile.array[pkmnBase + 0x16]);
+        this.attackIv   = binFile.getHiNibOf(pkmnBase + 0x15);
+        this.defenseIv  = binFile.getLoNibOf(pkmnBase + 0x15);
+        this.speedIv    = binFile.getHiNibOf(pkmnBase + 0x16);
+        this.specialIv  = binFile.getLoNibOf(pkmnBase + 0x16);
+        this.friendship = binFile.getUint8(pkmnBase + 0x1B);
+        this.pokerus =  {
+            strain: binFile.getHiNibOf(pkmnBase + 0x1C),
+            days: binFile.getLoNibOf(pkmnBase + 0x1C)
         };
     }
+
+    get currentHp () {
+        return this.inParty ? this.$binFile.getUint16(this.$pkmnBase + 0x22) : this.maxHp;
+    }
+
+    get level() {
+        return this.inParty ?
+            this.$binFile.array[this.$pkmnBase + 0x1F] :
+            this.species.ex.levelAt(this.experience);
+    }
+
+    get maxHp() {
+        return this.inParty ?
+            this.$binFile.getUint16(this.$pkmnBase + 0x24) :
+            this.calcHpStat(this.hpIv, this.hpEv, this.species.hp, this.level);
+    }
+
+    get attack() {
+        return this.inParty ?
+            this.$binFile.getUint16(this.$pkmnBase + 0x26) :
+            this.calcStat(
+                this.attackIv, this.attackEv, this.species.atk, this.level);
+    }
+
+    get defense() {
+        return this.inParty ?
+            this.$binFile.getUint16(this.$pkmnBase + 0x28) :
+            this.calcStat(
+                this.defenseIv, this.defenseEv, this.species.def, this.level);
+    }
+
+    get speed()  {
+        return this.inParty ?
+            this.$binFile.getUint16(this.$pkmnBase + 0x2A) :
+            this.calcStat(
+                this.speedIv, this.speedEv, this.species.spd, this.level);
+    }
+
+    get specialAtk() {
+        return this.inParty ?
+            this.$binFile.getUint16(this.$pkmnBase + 0x2C) :
+            this.calcStat(this.specialIv, this.specialEv, this.species.satk, this.level);
+    }
+
+    get specialDef() {
+        return this.inParty ?
+            this.$binFile.getUint16(this.$pkmnBase + 0x2E) :
+            this.calcStat(this.specialIv, this.specialEv, this.species.sdef, this.level);
+    }
+
 }
